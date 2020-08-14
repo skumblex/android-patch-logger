@@ -4,6 +4,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime as dt
 
+N = 500
+device = "OnePlus_6T"
+
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
 plt.rcParams['text.latex.preamble']=r"\usepackage{amsmath}\usepackage{mathpazo}\usepackage{mathabx}"
@@ -16,21 +19,18 @@ ax.yaxis.set_ticks_position('both')
 for axis in ['top','bottom','left','right']:
     ax.spines[axis].set_linewidth(0.5)
 
-data = np.loadtxt("patch_history", dtype=str)
+data = np.loadtxt("../data/" + device + "/" + device + ".patch_history", dtype=str)
 
 date0 = dt.datetime.strptime(data[0,0], "%Y-%m-%d").date()
 
-last_date = date0
-last_build = dt.datetime.strptime(data[0,5], "%y%m%d").date()
 pd = np.zeros(len(data))
 bd = np.array([])
 
 l = len(data)
 
-g = 0
-o = 0
-r = 0
-p = 0
+g, o, r, p = 0, 0, 0, 0
+
+last_build = dt.datetime.strptime(data[0,5], "%y%m%d").date()
 for i, d in enumerate(data):
     date  = dt.datetime.strptime(d[0], "%Y-%m-%d").date()
     patch = dt.datetime.strptime(d[1], "%Y-%m-%d").date()
@@ -40,10 +40,9 @@ for i, d in enumerate(data):
     patch_delta = (date - patch).days
 
     if build != last_build:
-        build_delta = -(last_build - build).days
+        build_delta = (build - last_build).days
         bd = np.append(bd, [build_delta])
         last_build = build
-        last_date = date
 
     pd[i] = patch_delta
 
@@ -66,23 +65,33 @@ print(g/l*100, o/l*100, r/l*100, p/l*100)
 print(np.mean(pd), np.mean(bd), np.sqrt(np.var(bd)))
 mean_delta = str(int(np.mean(pd*10))/10)
 
-plt.plot(0, 500, color='mediumseagreen', label=r'$t \leq 30\,\mathrm{days}$')
-plt.plot(0, 500, color='darkorange', label=r'$30 < t \leq 60\,\mathrm{days}$')
-plt.plot(0, 500, color='crimson', label=r'$60 < t \leq 90\,\mathrm{days}$')
-plt.plot(0, 500, color='darkorchid', label=r'$t > 90\,\mathrm{days}$')
+plt.plot(-100, 500, color='mediumseagreen', label=r'$t \leq 30\,\mathrm{days}$')
+plt.plot(-100, 500, color='darkorange', label=r'$30 < t \leq 60\,\mathrm{days}$')
+plt.plot(-100, 500, color='crimson', label=r'$60 < t \leq 90\,\mathrm{days}$')
+plt.plot(-100, 500, color='darkorchid', label=r'$t > 90\,\mathrm{days}$')
 
-plt.plot([-1, 1000], [30]*2, color='mediumseagreen', linestyle='--')
-plt.plot([-1, 1000], [60]*2, color='darkorange', linestyle='--')
-plt.plot([-1, 1000], [90]*2, color='crimson', linestyle='--')
+N5 = N/5
 
-plt.text(5, 130, r'$\diameter = ' + mean_delta + r"\,\mathrm{days}$")
+plt.plot([-1, N], [30]*2, color='mediumseagreen', linestyle='--')
+plt.plot([-1, N], [60]*2, color='darkorange', linestyle='--')
+plt.plot([-1, N], [90]*2, color='crimson', linestyle='--')
+plt.plot([-1, N], [120]*2, color='darkorchid', linestyle='--')
+
+plt.text(0.1*N5, 135, r'$\diameter = ' + mean_delta + r"\,\mathrm{days}$", verticalalignment='center')
+
+gi, oi, ri, pi = int(g/l*10000)/100, int(o/l*10000)/100, int(r/l*10000)/100, int(p/l*10000)/100
+plt.text(0.1*N5, -15, ('0' if gi < 10 else '') + str(gi) + '\%', color='mediumseagreen')
+plt.text(1.1*N5, -15, ('0' if oi < 10 else '') + str(oi) + '\%', color='darkorange')
+plt.text(2.1*N5, -15, ('0' if ri < 10 else '') + str(ri) + '\%', color='crimson')
+plt.text(3.1*N5, -15, ('0' if pi < 10 else '') + str(pi) + '\%', color='darkorchid')
+
 
 plt.legend(fontsize=11)
 plt.ylabel('Age of the security patch [days]', fontsize=12)
 plt.xlabel('Time since start of data collection [days]', fontsize=12)
-plt.ylim(0, 150)
-plt.xlim(-5, 505)
+plt.ylim(-20, 150)
+plt.xlim(0, N)
 plt.yticks(np.linspace(0, 150, 6))
-plt.title("OnePlus 6T; Starting date: 2019-04-09", fontsize=12)
-plt.savefig('oneplus_patch.png')
+plt.title(device.replace("_", " ") + "; Starting date: " + str(date0), fontsize=12)
+plt.savefig(device + '.pdf')
 plt.show()

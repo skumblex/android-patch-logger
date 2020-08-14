@@ -23,7 +23,7 @@ echo $(date +%Y-%m-%d) $(getprop ro.build.version.security_patch) $(uname -r) $(
 
 ## Installation
 
-Install [MacroDroid](https://play.google.com/store/apps/details?id=com.arlosoft.macrodroid&hl=en_US) from the PlayStore and download the .macro file from this git repository. Afterwards use your favorite file explorer to click on the .macro file and select open with MacroDroid. This should open the respective macro and allow you to save it. Afterwards, simply let MacroDroid do its job. **NOTE**: You might want to disable battery opimization for MacroDroid, in order for the macro to run reliably.
+Install [MacroDroid](https://play.google.com/store/apps/details?id=com.arlosoft.macrodroid&hl=en_US) from the PlayStore and download the .macro file from this git repository. Afterwards use your favorite file explorer to click on the .macro file and select open with MacroDroid. This should open the respective macro and allow you to save it. Afterwards, simply let MacroDroid do its job. **NOTE**: You might want to disable battery opimization for MacroDroid, in order for the macro to run reliably. Also make sure that storage access is granted to MacroDroid.
 
 ## Sharing
 

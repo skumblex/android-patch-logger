@@ -4,8 +4,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime as dt
 
-N = 500
-device = "OnePlus_6T"
+N = 700
+device = "Nokia_6"
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
@@ -30,19 +30,19 @@ l = len(data)
 
 g, o, r, p = 0, 0, 0, 0
 
-last_build = dt.datetime.strptime(data[0,5], "%y%m%d").date()
+#last_build = dt.datetime.strptime(data[0,5], "%y%m%d").date()
 for i, d in enumerate(data):
     date  = dt.datetime.strptime(d[0], "%Y-%m-%d").date()
     patch = dt.datetime.strptime(d[1], "%Y-%m-%d").date()
-    build = dt.datetime.strptime(d[5], "%y%m%d").date()
+    #build = dt.datetime.strptime(d[5], "%y%m%d").date()
 
     days_delta  = (date - date0).days
     patch_delta = (date - patch).days
 
-    if build != last_build:
-        build_delta = (build - last_build).days
-        bd = np.append(bd, [build_delta])
-        last_build = build
+    # if build != last_build:
+    #     build_delta = (build - last_build).days
+    #     bd = np.append(bd, [build_delta])
+    #     last_build = build
 
     pd[i] = patch_delta
 
@@ -62,7 +62,7 @@ for i, d in enumerate(data):
     plt.plot(days_delta, patch_delta, "*", color=col)
 
 print(g/l*100, o/l*100, r/l*100, p/l*100)
-print(np.mean(pd), np.mean(bd), np.sqrt(np.var(bd)))
+#print(np.mean(pd), np.mean(bd), np.sqrt(np.var(bd)))
 mean_delta = str(int(np.mean(pd*10))/10)
 
 plt.plot(-100, 500, color='mediumseagreen', label=r'$t \leq 30\,\mathrm{days}$')

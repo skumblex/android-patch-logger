@@ -70,7 +70,9 @@ plt.plot(-100, 500, color='darkorange', label=r'$30 < t \leq 60\,\mathrm{days}$'
 plt.plot(-100, 500, color='crimson', label=r'$60 < t \leq 90\,\mathrm{days}$')
 plt.plot(-100, 500, color='darkorchid', label=r'$t > 90\,\mathrm{days}$')
 
-N5 = N/5
+N5 = N/4
+
+plt.plot([-1, N], [0]*2, color='black', linestyle='-', linewidth=0.5)
 
 plt.plot([-1, N], [30]*2, color='mediumseagreen', linestyle='--')
 plt.plot([-1, N], [60]*2, color='darkorange', linestyle='--')
@@ -79,14 +81,14 @@ plt.plot([-1, N], [120]*2, color='darkorchid', linestyle='--')
 
 plt.text(0.1*N5, 135, r'$\diameter = ' + mean_delta + r"\,\mathrm{days}$", verticalalignment='center')
 
-gi, oi, ri, pi = int(g/l*10000)/100, int(o/l*10000)/100, int(r/l*10000)/100, int(p/l*10000)/100
-plt.text(0.1*N5, -15, ('0' if gi < 10 else '') + str(gi) + '\%', color='mediumseagreen')
-plt.text(1.1*N5, -15, ('0' if oi < 10 else '') + str(oi) + '\%', color='darkorange')
-plt.text(2.1*N5, -15, ('0' if ri < 10 else '') + str(ri) + '\%', color='crimson')
-plt.text(3.1*N5, -15, ('0' if pi < 10 else '') + str(pi) + '\%', color='darkorchid')
+gi, oi, ri, pi = 100*g/l, 100*o/l, 100*r/l, 100*p/l
+plt.text(0.1*N5, -14, "{:05.2f}\%".format(gi), color='mediumseagreen')
+plt.text(1.1*N5, -14, "{:05.2f}\%".format(oi), color='darkorange')
+plt.text(2.1*N5, -14, "{:05.2f}\%".format(ri), color='crimson')
+plt.text(3.1*N5, -14, "{:05.2f}\%".format(pi), color='darkorchid')
 
 
-plt.legend(fontsize=11)
+plt.legend(fontsize=11, loc='upper right', edgecolor='none')
 plt.ylabel('Age of the security patch [days]', fontsize=12)
 plt.xlabel('Time since start of data collection [days]', fontsize=12)
 plt.ylim(-20, 150)

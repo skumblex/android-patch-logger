@@ -4,8 +4,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 import datetime as dt
 
-N = 700
-device = "OnePlus_6T"
+import matplotlib
+matplotlib.rcParams['hatch.linewidth'] = 8.0
+
+N       = 1200
+device  = "OnePlus_6T"
+release = "2018-11-06"
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
@@ -21,7 +25,9 @@ for axis in ['top','bottom','left','right']:
 
 data = np.loadtxt("../data/" + device + "/" + device + ".patch_history", dtype=str)
 
-date0 = dt.datetime.strptime(data[0,0], "%Y-%m-%d").date()
+date0  = dt.datetime.strptime(data[0,0], "%Y-%m-%d").date()
+dateR  = dt.datetime.strptime(release, "%Y-%m-%d").date()
+offset = (date0 -dateR).days
 
 pd = np.zeros(len(data))
 bd = np.array([])
@@ -36,7 +42,7 @@ for i, d in enumerate(data):
     patch = dt.datetime.strptime(d[1], "%Y-%m-%d").date()
     build = dt.datetime.strptime(d[5], "%y%m%d").date()
 
-    days_delta  = (date - date0).days
+    days_delta  = (date - date0).days + offset
     patch_delta = (date - patch).days
 
     if build != last_build:
@@ -79,6 +85,7 @@ plt.plot([-1, N], [60]*2, color='darkorange', linestyle='--')
 plt.plot([-1, N], [90]*2, color='crimson', linestyle='--')
 plt.plot([-1, N], [120]*2, color='darkorchid', linestyle='--')
 
+plt.fill_between([0, offset], -20, 150, facecolor="white", hatch="\\", edgecolor="0.9")
 plt.text(0.1*N5, 135, r'$\diameter = ' + mean_delta + r"\,\mathrm{days}$", verticalalignment='center')
 
 gi, oi, ri, pi = 100*g/l, 100*o/l, 100*r/l, 100*p/l
@@ -87,10 +94,9 @@ plt.text(1.1*N5, -14, "{:05.2f}\%".format(oi), color='darkorange')
 plt.text(2.1*N5, -14, "{:05.2f}\%".format(ri), color='crimson')
 plt.text(3.1*N5, -14, "{:05.2f}\%".format(pi), color='darkorchid')
 
-
 plt.legend(fontsize=11, loc='upper right', edgecolor='none')
 plt.ylabel('Age of the security patch [days]', fontsize=12)
-plt.xlabel('Time since start of data collection [days]', fontsize=12)
+plt.xlabel('Time since release [days]', fontsize=12)
 plt.ylim(-20, 150)
 plt.xlim(0, N)
 plt.yticks(np.linspace(0, 150, 6))

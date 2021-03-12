@@ -10,6 +10,7 @@ matplotlib.rcParams['hatch.linewidth'] = 8.0
 N       = 1200
 device  = "Nokia_6.1"
 release = "2018-01-07"
+adup    = {9: "2018-08-06", 10:"2019-09-03", 11:"2020-09-08"}
 
 plt.rc('text', usetex=True)
 plt.rc('font', family='serif', size=14)
@@ -36,11 +37,32 @@ l = len(data)
 
 g, o, r, p = 0, 0, 0, 0
 
+# Get first android version
+ad0 = 9
+for key in sorted(adup.keys()):
+    adate = dt.datetime.strptime(adup[key], "%Y-%m-%d").date()
+    rdate = dt.datetime.strptime(release, "%Y-%m-%d").date()
+    diff = (adate - rdate).days
+
+    if diff < 0:
+        ad0 = key
+        break
+
 #last_build = dt.datetime.strptime(data[0,5], "%y%m%d").date()
 for i, d in enumerate(data):
     date  = dt.datetime.strptime(d[0], "%Y-%m-%d").date()
     patch = dt.datetime.strptime(d[1], "%Y-%m-%d").date()
     #build = dt.datetime.strptime(d[5], "%y%m%d").date()
+    adv0  = dt.datetime.strptime(adup[ad0], "%Y-%m-%d").date()
+    adv1  = dt.datetime.strptime(adup[ad0+1], "%Y-%m-%d").date() if ad0+1 in adup.keys() else None
+    adver = int(d[3])
+
+    sz = 5 if adver == ad0 else 3
+
+    if adv1 is not None:
+        ad_diff = (date - adv1).days
+        if (ad_diff >= 0):
+            ad0 += 1
 
     days_delta  = (date - date0).days + offset
     patch_delta = (date - patch).days
@@ -65,7 +87,7 @@ for i, d in enumerate(data):
         col = 'darkorchid'
         p += 1
 
-    plt.plot(days_delta, patch_delta, "*", color=col)
+    plt.plot(days_delta, patch_delta, "o", color=col, markersize=sz)
 
 print(g/l*100, o/l*100, r/l*100, p/l*100)
 #print(np.mean(pd), np.mean(bd), np.sqrt(np.var(bd)))
